@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 from torch.autograd import Function
 
-# ─── Gradient Reversal Layer ───────────────────────────────
 class GradientReversalFunction(Function):
     @staticmethod
     def forward(ctx, x, lambda_grl):
@@ -22,5 +21,3 @@ class GradientReversalLayer(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return GradientReversalFunction.apply(x, self.lambda_grl)
 
-#
-# ─── Wav2Vec2ForCTC with Domain-Adversarial Branch ───────────
