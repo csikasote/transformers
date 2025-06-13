@@ -1,22 +1,38 @@
 from pprint import pprint
-from datasets import load_metric
-import torch
+#from datasets import load_metric
 import evaluate
+import torch
 import numpy as np
 import wandb
 import sys, os
 sys.path.append(os.pardir)
 import argparse
 from distutils.util import strtobool
+#import torchaudio
+#torchaudio.set_audio_backend("sox_io")
 
 from transformers import WavLMForCTC # Original WavLMModel
+from transformers import (
+    AutoConfig,
+    AutoFeatureExtractor,
+    AutoModelForCTC,
+    AutoProcessor,
+    AutoTokenizer,
+    HfArgumentParser,
+    Trainer,
+    TrainingArguments,
+    Wav2Vec2Processor,
+    set_seed,
+)
 from modeling import AdaWavLMForCTC # WavLMModel with Adapter
 
 from utils import (
-    LibriSpeechDataset, 
-    DataCollatorCTCWithPadding,
-    train_model,
-    fix_seed
+  read_data,
+  Dataset,
+  LibriSpeechDataset, 
+  DataCollatorCTCWithPadding,
+  train_model,
+  fix_seed
 )
 
 fix_seed(42)
@@ -40,7 +56,7 @@ def main():
     parser.add_argument('--ladapter_init_std', type=float, default=1e-3)
     parser.add_argument('--save_model', type=strtobool, default=False)
 
-    parser.add_argument('--use_steplr', type=strtobool, default=True)
+    parser.add_argument('--use_steplr', type=strtobool, default=True) 
     parser.add_argument('--classifier_lr', type=float, default=1e-3)
     parser.add_argument('--encoder_lr', type=float, default=1e-4)
     parser.add_argument('--ladapter_lr', type=float, default=1e-3)
@@ -50,18 +66,60 @@ def main():
     parser.add_argument('--weighted_sum', type=strtobool, default=False) 
     parser.add_argument('--train_lawithea', type=strtobool, default=False)
 
+
     parser.add_argument('--wandb_log', type=strtobool, default=False)
+    parser.add_argument('--verbose', type=strtobool, default=True)
+    parser.add_argument('--max_duration', type=int, default=20)
 
     args = parser.parse_args()
+
+
+    ## Model & Feature Extractor
+    model_checkpoint = 'microsoft/wavlm-base-plus'
+    feature_extractor = AutoFeatureExtractor.from_pretrained(model_checkpoint)
+    processor = AutoProcessor.from_pretrained("facebook/wav2vec2-base-960h")
+
+    # Tokenizer config
+    config = AutoConfig.from_pretrained(
+      "facebook/wav2vec2-base-960h",
+      token=None
+      )
+
+    tokenizer_kwargs = {
+      "config": config if config.tokenizer_class is not None else None,
+      "tokenizer_type": config.model_type if config.tokenizer_class is None else None,
+      "unk_token": "[UNK]",
+      "pad_token": "[PAD]",
+      "word_delimiter_token": "|",}
+      
+    # load feature_extractor and tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(
+      "facebook/wav2vec2-base-960h",
+      token=None,
+      **tokenizer_kwargs,
+    )
+
+    df_train, df_valid = read_data(os.getcwd(), verbose=args.verbose)
+
+    train_dataset = Dataset(
+      examples = df_train, 
+      feature_extractor=feature_extractor,
+      tokenizer = tokenizer,
+      max_duration = args.max_duration, 
+      )
+    val_dataset = Dataset(
+      examples=df_valid,  
+      feature_extractor = feature_extractor,
+      tokenizer = tokenizer,
+      max_duration = args.max_duration,
+      )
     
-    train_dataset = LibriSpeechDataset('train.csv')
-    val_dataset = LibriSpeechDataset('validation.csv')
-    processor = train_dataset.processor
     collator = DataCollatorCTCWithPadding(processor=processor, padding=True)
 
     if args.train_encoder:
         model_config = {'ctc_loss_reduction':'mean',
                         'pad_token_id':processor.tokenizer.pad_token_id,
+                        'ctc_zero_infinity':True
                         }
         learning_rate = {
             'classifier':args.classifier_lr,
@@ -79,11 +137,13 @@ def main():
                         'use_residual':False,
                         'ladapter_act': None,
                         'use_adapter_norm':False,
+                        'ctc_zero_infinity':True,
                     }
         learning_rate = {
             'classifier':args.classifier_lr,
             'adapter_layer_weights':args.ladapter_lr, 
             'layer_norm':args.ladapter_lr,
+            'ctc_zero_infinity':True
             }
 
     elif args.train_encada:
@@ -93,7 +153,8 @@ def main():
                         'eadapter_act': None if args.eadapter_act=='None' else args.eadapter_act,
                         'use_adapter_ff': args.use_adapter_ff,
                         'use_adapter_attn': args.use_adapter_attn,
-                        'adapter_init_std': args.adapter_init_std
+                        'adapter_init_std': args.adapter_init_std,
+                        'ctc_zero_infinity':True,
                     }
         learning_rate = {
             'classifier':args.classifier_lr,
@@ -117,7 +178,8 @@ def main():
                         'eadapter_act': None if args.eadapter_act=='None' else args.eadapter_act,
                         'use_adapter_ff': True,
                         'use_adapter_attn': False,
-                        'adapter_init_std': args.adapter_init_std
+                        'adapter_init_std': args.adapter_init_std,
+                        'ctc_zero_infinity':True
                     }
         learning_rate = {
             'classifier':args.classifier_lr,
@@ -137,6 +199,7 @@ def main():
                         'use_residual':args.use_skip,
                         'ladapter_act': None if args.ladapter_act=='None' else args.ladapter_act,
                         'use_adapter_norm':args.use_adapter_norm,
+                        'ctc_zero_infinity':True
                     }
         learning_rate = {
             'classifier':args.classifier_lr,
@@ -299,12 +362,43 @@ def main():
         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=func)
 
     metric = evaluate.load('wer')
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size['train'], collate_fn=collator, shuffle=True, num_workers=12, pin_memory=True)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size['val'], collate_fn=collator, shuffle=False, num_workers=12, pin_memory=True)
-    dataloaders_dict = {'train':train_loader, 'val':val_loader}
-    model = train_model(model, processor, dataloaders_dict, optimizer, scheduler, metric, num_epochs, report_wandb=False, val_interval=100)
+    train_loader = torch.utils.data.DataLoader(
+      train_dataset, 
+      batch_size=batch_size['train'], 
+      collate_fn=collator, 
+      shuffle=True, 
+      num_workers=12, 
+      pin_memory=True)
+    val_loader = torch.utils.data.DataLoader(
+      val_dataset, 
+      batch_size=batch_size['val'], 
+      collate_fn=collator, 
+      shuffle=False, 
+      num_workers=12, 
+      pin_memory=True)
+    dataloaders_dict = {
+      'train':train_loader, 
+      'val':val_loader
+      }
+    model = train_model(
+      model, 
+      processor,
+      tokenizer, 
+      dataloaders_dict, 
+      optimizer, 
+      scheduler, 
+      metric, 
+      num_epochs, 
+      report_wandb=False, 
+      val_interval=100)
+
     if args.save_model:
-        torch.save(model.module.state_dict(), args.run_name+'.pth')
+        # Save model properly whether DataParallel is used or not
+        if hasattr(model, "module"):
+            torch.save(model.module.state_dict(), args.run_name + ".pth")  # If wrapped in DataParallel
+        else:
+            torch.save(model.state_dict(), args.run_name + ".pth")  # If not wrapped
+        #torch.save(model.module.state_dict(), args.run_name+'.pth')
 
     if not args.train_encada and not args.train_encoder:
         weight = torch.nn.functional.softmax(model.module.wavlm.encoder.adapter_to_output_layer_weights.detach().cpu()).numpy()

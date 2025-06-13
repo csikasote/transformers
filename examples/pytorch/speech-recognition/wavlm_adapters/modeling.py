@@ -26,6 +26,7 @@ from transformers.models.wavlm.modeling_wavlm import (
 from transformers.modeling_utils import PreTrainedModel
 from transformers.modeling_outputs import BaseModelOutput
 from transformers.activations import ACT2FN
+#from transformers.deepspeed import is_deepspeed_zero3_enabled
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import ModelOutput
 from torch.nn import CrossEntropyLoss
@@ -96,7 +97,8 @@ class AdaWavLMConfig(WavLMConfig):
         self.adapter_dropproba = adapter_dropproba
         self.use_adapter_norm = use_adapter_norm
         self.use_adapter_fc = use_adapter_fc
-        
+
+# Encoder Adapter Layer: [->FC->ACT->FC->LN->]        
 class AdapterLayer(nn.Module):
     def __init__(self, config, layer):
         super().__init__()

@@ -5,44 +5,98 @@ import numpy as np
 import pandas as pd
 import random
 import wandb
+import librosa
+import functools
+import os
 
 from tqdm.notebook import tqdm
 from transformers import Wav2Vec2Processor
 from transformers import AutoProcessor
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional, Union
+from datasets import DatasetDict, load_dataset
 
-
-class LibriSpeechDataset(object):
-    processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")    
-    def __init__(self, csv_file, lthresh=None):
-        self.df = pd.read_csv(csv_file)
-        self.lthresh = lthresh
-    def __len__(self):
-        return len(self.df)
+""" Dataset Class """
+class Dataset(object):
+    def __init__(
+        self, 
+        examples, 
+        feature_extractor,
+        tokenizer, 
+        max_duration, 
+        ):
+        self.examples = examples['wav']
+        self.labels = examples['wrd']
+        self.max_duration = max_duration
+        self.feature_extractor = feature_extractor
+        self.tokenizer = tokenizer
 
     def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
-        
-        data = self.df.loc[idx]
-        array, sampling_rate = torchaudio.load(data['wav'])
-        
-        if self.lthresh:
-            array = array.numpy().flatten()[:self.lthresh]
-        else:
-            array = array.numpy().flatten()
-        array = self.processor(array,sampling_rate=sampling_rate).input_values[0]
 
-        text = data['wrd']
-        file = data['wav']
-        
-        with self.processor.as_target_processor():
-            labels = self.processor(text).input_ids
-        sample = {'input_values': array,  
-                  'labels': labels,
-                  'files': file}
-        return sample
+      try:
+        array = librosa.load(self.examples[idx], sr=16_000)[0].squeeze()
+        #print("Array:", array)
+        inputs = self.feature_extractor(
+          array,
+          sampling_rate=self.feature_extractor.sampling_rate, 
+          return_tensors="pt",
+          max_length=int(self.feature_extractor.sampling_rate * self.max_duration), 
+          truncation=True,
+          padding='max_length'
+            )
+      except:
+          print("Audio not available")
+
+      try:
+        text = self.labels[idx]
+        labels = self.tokenizer(text).input_ids
+      except:
+        print("Text not available")
+
+      
+      try:
+        item = {
+          'input_values': inputs['input_values'].squeeze(0),
+          'labels': labels
+        }
+
+      except:
+          item = {'input_values': [], 'labels': []}
+          
+      return item
+
+    def __len__(self):
+        return len(self.examples)
+
+
+""" Read and Process Data"""
+def read_data(df_folder, verbose=False):
+
+    df_train = pd.read_csv(
+        os.path.join(
+            df_folder, 
+            'train.csv'
+            ), 
+            index_col=None)
+    df_valid = pd.read_csv(
+        os.path.join(
+            df_folder, 
+            'dev.csv'
+            ), 
+            index_col=None)
+
+    # Remove the rows with missing wav and wrd values
+    df_train = df_train.dropna(subset=["wrd"])
+    df_train = df_train[df_train["wav"].apply(lambda p: os.path.isfile(p))]
+    df_valid = df_valid.dropna(subset=["wrd"])
+    df_valid = df_valid[df_valid["wav"].apply(lambda p: os.path.isfile(p))]
+
+
+    if verbose:
+        print("Train size: ", len(df_train))
+        print("Valid size: ", len(df_valid))
+
+    return df_train, df_valid
 
 @dataclass
 class DataCollatorCTCWithPadding:
@@ -70,7 +124,7 @@ class DataCollatorCTCWithPadding:
             7.5 (Volta).
     """
 
-    processor: AutoProcessor
+    processor: Wav2Vec2Processor
     padding: Union[bool, str] = "longest"
     pad_to_multiple_of: Optional[int] = None
     pad_to_multiple_of_labels: Optional[int] = None
@@ -106,3 +160,156 @@ class DataCollatorCTCWithPadding:
             batch["attention_mask"] = batch["attention_mask"].to(torch.long)
 
         return batch
+
+# train
+def train_model(model, processor, tokenizer, dataloaders_dict, optimizer, scheduler, metric, num_epochs, log_interval=10, report_wandb=False, val_interval=5):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
+    model = model.to(device)
+
+    torch.backends.cudnn.benchmark = True
+    
+    pbar_update = 1 / sum([len(v) for v in dataloaders_dict.values()])
+    
+    opt_flag = (type(optimizer) == list)
+    sc_flag = (type(scheduler) == list)
+
+    with tqdm(total=num_epochs) as pbar:
+        for epoch in range(num_epochs):
+
+            for phase in ['train', 'val']:
+                if phase == 'train':
+                    model.train()  
+                else:
+                    if (epoch+1) % val_interval:
+                        for _ in range(len(dataloaders_dict[phase])):
+                            pbar.update(pbar_update)
+                        continue
+                    model.eval()
+                epoch_loss = 0.0  
+                epoch_wer = 0.
+                epoch_preds_str=[]; epoch_labels_str=[]
+
+                for step, inputs in enumerate(dataloaders_dict[phase]):
+                   
+                    minibatch_size = inputs['input_values'].size(0)
+                    labels_ids = inputs['labels']
+                    inputs = inputs.to(device)
+
+                    if opt_flag:
+                        for opt in optimizer:
+                            opt.zero_grad()
+                    else:
+                        optimizer.zero_grad()
+
+                    with torch.set_grad_enabled(phase == 'train'):
+                        outputs = model(**inputs)
+                        del inputs
+                        loss = outputs.loss.mean(dim=-1)
+                        #loss = outputs.loss
+                        #preds_logits = outputs.logits # get logits
+                        #preds_ids = torch.argmax(preds_logits, dim=-1) 
+                        #preds_str = tokenizer.batch_decode(preds_ids) 
+                        #labels_ids[labels_ids==-100] = tokenizer.pad_token_id
+                        #labels_str = tokenizer.batch_decode(labels_ids, group_tokens=False)
+                        #wer = metric.compute(predictions=preds_str, references=labels_str)
+                        #epoch_preds_str += preds_str
+                        #epoch_labels_str += labels_str
+                        preds_ids = torch.argmax(outputs.logits, dim=-1)
+                        preds_str = processor.batch_decode(preds_ids)
+                        labels_ids[labels_ids==-100] = processor.tokenizer.pad_token_id
+                        labels_str = processor.batch_decode(labels_ids, group_tokens=False)
+                        wer = metric.compute(predictions=preds_str, references=labels_str)
+                        epoch_preds_str += preds_str
+                        epoch_labels_str += labels_str
+                    
+                    if phase == 'train':
+                        loss.backward()
+                        if opt_flag:
+                            for opt in optimizer:
+                                opt.step()
+                        else:
+                            optimizer.step()
+                        loss_log = loss.item()
+                        del loss
+                        
+                        if report_wandb:
+                            wandb.log({'train/loss':loss_log})
+                    epoch_loss += loss_log * minibatch_size
+                    
+                    
+                    pbar.update(pbar_update)
+                
+                epoch_wer = metric.compute(predictions=epoch_preds_str, references=epoch_labels_str)
+                epoch_loss = epoch_loss / len(dataloaders_dict[phase].dataset)
+                
+                if phase=='train':
+                    if scheduler:
+                        if sc_flag:
+                            for sc in scheduler:
+                                sc.step()
+                        else:        
+                            scheduler.step()
+                    print('Epoch {}/{} | {:^5} |  Loss: {:.4f} WER: {:.4f}'.format(epoch+1,\
+                                                               num_epochs, phase, epoch_loss, epoch_wer))
+                    if report_wandb:
+                        wandb.log({'train/epoch':epoch+1,
+                                'train/epoch_loss':epoch_loss,
+                                'train/epoch_WER':epoch_wer})
+                else:
+                    print('Epoch {}/{} | {:^5} |  Loss: {:.4f} WER: {:.4f}'.format(epoch+1,\
+                                                                 num_epochs, phase, epoch_loss, epoch_wer))
+                    if report_wandb:
+                        wandb.log({'val/epoch':epoch+1,
+                                'val/epoch_loss':epoch_loss,
+                                'val/epoch_WER':epoch_wer})
+    return model
+
+
+def create_vocabulary_from_data(
+    datasets: DatasetDict,
+    word_delimiter_token: Optional[str] = None,
+    unk_token: Optional[str] = None,
+    pad_token: Optional[str] = None,
+):
+    # Given training and test labels create vocabulary
+    def extract_all_chars(batch):
+        all_text = " ".join(batch["target_text"])
+        vocab = list(set(all_text))
+        return {"vocab": [vocab], "all_text": [all_text]}
+
+    vocabs = datasets.map(
+        extract_all_chars,
+        batched=True,
+        batch_size=-1,
+        keep_in_memory=True,
+        remove_columns=datasets["train"].column_names,
+    )
+
+    # take union of all unique characters in each dataset
+    vocab_set = functools.reduce(
+        lambda vocab_1, vocab_2: set(vocab_1["vocab"][0]) | set(vocab_2["vocab"][0]), vocabs.values()
+    )
+
+    vocab_dict = {v: k for k, v in enumerate(sorted(vocab_set))}
+
+    # replace white space with delimiter token
+    if word_delimiter_token is not None:
+        vocab_dict[word_delimiter_token] = vocab_dict[" "]
+        del vocab_dict[" "]
+
+    # add unk and pad token
+    if unk_token is not None:
+        vocab_dict[unk_token] = len(vocab_dict)
+
+    if pad_token is not None:
+        vocab_dict[pad_token] = len(vocab_dict)
+
+    return vocab_dict
+
+
+def fix_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
