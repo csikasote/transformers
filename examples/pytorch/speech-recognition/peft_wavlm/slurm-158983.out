@@ -1,0 +1,445 @@
+ 
+---------- Step 0: Installing libraries  --------------
+ 
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: tqdm in /opt/exp_soft/miniconda3-py3.12/lib/python3.12/site-packages (4.65.0)
+Defaulting to user installation because normal site-packages is not writeable
+Collecting ipywidgets
+  Downloading ipywidgets-8.1.7-py3-none-any.whl.metadata (2.4 kB)
+Collecting comm>=0.1.3 (from ipywidgets)
+  Downloading comm-0.2.2-py3-none-any.whl.metadata (3.7 kB)
+Requirement already satisfied: ipython>=6.1.0 in /home/skscla001/.local/lib/python3.12/site-packages (from ipywidgets) (9.0.2)
+Requirement already satisfied: traitlets>=4.3.1 in /home/skscla001/.local/lib/python3.12/site-packages (from ipywidgets) (5.14.3)
+Collecting widgetsnbextension~=4.0.14 (from ipywidgets)
+  Downloading widgetsnbextension-4.0.14-py3-none-any.whl.metadata (1.6 kB)
+Collecting jupyterlab_widgets~=3.0.15 (from ipywidgets)
+  Downloading jupyterlab_widgets-3.0.15-py3-none-any.whl.metadata (20 kB)
+Requirement already satisfied: decorator in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (5.2.1)
+Requirement already satisfied: ipython-pygments-lexers in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (1.1.1)
+Requirement already satisfied: jedi>=0.16 in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (0.19.2)
+Requirement already satisfied: matplotlib-inline in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (0.1.7)
+Requirement already satisfied: pexpect>4.3 in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (4.9.0)
+Requirement already satisfied: prompt_toolkit<3.1.0,>=3.0.41 in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (3.0.50)
+Requirement already satisfied: pygments>=2.4.0 in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (2.19.1)
+Requirement already satisfied: stack_data in /home/skscla001/.local/lib/python3.12/site-packages (from ipython>=6.1.0->ipywidgets) (0.6.3)
+Requirement already satisfied: parso<0.9.0,>=0.8.4 in /home/skscla001/.local/lib/python3.12/site-packages (from jedi>=0.16->ipython>=6.1.0->ipywidgets) (0.8.4)
+Requirement already satisfied: ptyprocess>=0.5 in /home/skscla001/.local/lib/python3.12/site-packages (from pexpect>4.3->ipython>=6.1.0->ipywidgets) (0.7.0)
+Requirement already satisfied: wcwidth in /home/skscla001/.local/lib/python3.12/site-packages (from prompt_toolkit<3.1.0,>=3.0.41->ipython>=6.1.0->ipywidgets) (0.2.13)
+Requirement already satisfied: executing>=1.2.0 in /home/skscla001/.local/lib/python3.12/site-packages (from stack_data->ipython>=6.1.0->ipywidgets) (2.2.0)
+Requirement already satisfied: asttokens>=2.1.0 in /home/skscla001/.local/lib/python3.12/site-packages (from stack_data->ipython>=6.1.0->ipywidgets) (3.0.0)
+Requirement already satisfied: pure-eval in /home/skscla001/.local/lib/python3.12/site-packages (from stack_data->ipython>=6.1.0->ipywidgets) (0.2.3)
+Downloading ipywidgets-8.1.7-py3-none-any.whl (139 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 139.8/139.8 kB 6.0 MB/s eta 0:00:00
+Downloading comm-0.2.2-py3-none-any.whl (7.2 kB)
+Downloading jupyterlab_widgets-3.0.15-py3-none-any.whl (216 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 216.6/216.6 kB 14.4 MB/s eta 0:00:00
+Downloading widgetsnbextension-4.0.14-py3-none-any.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 52.7 MB/s eta 0:00:00
+Installing collected packages: widgetsnbextension, jupyterlab_widgets, comm, ipywidgets
+Successfully installed comm-0.2.2 ipywidgets-8.1.7 jupyterlab_widgets-3.0.15 widgetsnbextension-4.0.14
+---------- Step 1: Running model ----------------------
+Some weights of AdaWavLMForCTC were not initialized from the model checkpoint at microsoft/wavlm-base-plus and are newly initialized: ['encoder.layers.0.adapter_layer_attn.layernorm.bias', 'encoder.layers.0.adapter_layer_attn.layernorm.weight', 'encoder.layers.0.adapter_layer_attn.linear_down.bias', 'encoder.layers.0.adapter_layer_attn.linear_down.weight', 'encoder.layers.0.adapter_layer_attn.linear_up.bias', 'encoder.layers.0.adapter_layer_attn.linear_up.weight', 'encoder.layers.0.adapter_layer_ff.layernorm.bias', 'encoder.layers.0.adapter_layer_ff.layernorm.weight', 'encoder.layers.0.adapter_layer_ff.linear_down.bias', 'encoder.layers.0.adapter_layer_ff.linear_down.weight', 'encoder.layers.0.adapter_layer_ff.linear_up.bias', 'encoder.layers.0.adapter_layer_ff.linear_up.weight', 'encoder.layers.1.adapter_layer_attn.layernorm.bias', 'encoder.layers.1.adapter_layer_attn.layernorm.weight', 'encoder.layers.1.adapter_layer_attn.linear_down.bias', 'encoder.layers.1.adapter_layer_attn.linear_down.weight', 'encoder.layers.1.adapter_layer_attn.linear_up.bias', 'encoder.layers.1.adapter_layer_attn.linear_up.weight', 'encoder.layers.1.adapter_layer_ff.layernorm.bias', 'encoder.layers.1.adapter_layer_ff.layernorm.weight', 'encoder.layers.1.adapter_layer_ff.linear_down.bias', 'encoder.layers.1.adapter_layer_ff.linear_down.weight', 'encoder.layers.1.adapter_layer_ff.linear_up.bias', 'encoder.layers.1.adapter_layer_ff.linear_up.weight', 'encoder.layers.10.adapter_layer_attn.layernorm.bias', 'encoder.layers.10.adapter_layer_attn.layernorm.weight', 'encoder.layers.10.adapter_layer_attn.linear_down.bias', 'encoder.layers.10.adapter_layer_attn.linear_down.weight', 'encoder.layers.10.adapter_layer_attn.linear_up.bias', 'encoder.layers.10.adapter_layer_attn.linear_up.weight', 'encoder.layers.10.adapter_layer_ff.layernorm.bias', 'encoder.layers.10.adapter_layer_ff.layernorm.weight', 'encoder.layers.10.adapter_layer_ff.linear_down.bias', 'encoder.layers.10.adapter_layer_ff.linear_down.weight', 'encoder.layers.10.adapter_layer_ff.linear_up.bias', 'encoder.layers.10.adapter_layer_ff.linear_up.weight', 'encoder.layers.11.adapter_layer_attn.layernorm.bias', 'encoder.layers.11.adapter_layer_attn.layernorm.weight', 'encoder.layers.11.adapter_layer_attn.linear_down.bias', 'encoder.layers.11.adapter_layer_attn.linear_down.weight', 'encoder.layers.11.adapter_layer_attn.linear_up.bias', 'encoder.layers.11.adapter_layer_attn.linear_up.weight', 'encoder.layers.11.adapter_layer_ff.layernorm.bias', 'encoder.layers.11.adapter_layer_ff.layernorm.weight', 'encoder.layers.11.adapter_layer_ff.linear_down.bias', 'encoder.layers.11.adapter_layer_ff.linear_down.weight', 'encoder.layers.11.adapter_layer_ff.linear_up.bias', 'encoder.layers.11.adapter_layer_ff.linear_up.weight', 'encoder.layers.2.adapter_layer_attn.layernorm.bias', 'encoder.layers.2.adapter_layer_attn.layernorm.weight', 'encoder.layers.2.adapter_layer_attn.linear_down.bias', 'encoder.layers.2.adapter_layer_attn.linear_down.weight', 'encoder.layers.2.adapter_layer_attn.linear_up.bias', 'encoder.layers.2.adapter_layer_attn.linear_up.weight', 'encoder.layers.2.adapter_layer_ff.layernorm.bias', 'encoder.layers.2.adapter_layer_ff.layernorm.weight', 'encoder.layers.2.adapter_layer_ff.linear_down.bias', 'encoder.layers.2.adapter_layer_ff.linear_down.weight', 'encoder.layers.2.adapter_layer_ff.linear_up.bias', 'encoder.layers.2.adapter_layer_ff.linear_up.weight', 'encoder.layers.3.adapter_layer_attn.layernorm.bias', 'encoder.layers.3.adapter_layer_attn.layernorm.weight', 'encoder.layers.3.adapter_layer_attn.linear_down.bias', 'encoder.layers.3.adapter_layer_attn.linear_down.weight', 'encoder.layers.3.adapter_layer_attn.linear_up.bias', 'encoder.layers.3.adapter_layer_attn.linear_up.weight', 'encoder.layers.3.adapter_layer_ff.layernorm.bias', 'encoder.layers.3.adapter_layer_ff.layernorm.weight', 'encoder.layers.3.adapter_layer_ff.linear_down.bias', 'encoder.layers.3.adapter_layer_ff.linear_down.weight', 'encoder.layers.3.adapter_layer_ff.linear_up.bias', 'encoder.layers.3.adapter_layer_ff.linear_up.weight', 'encoder.layers.4.adapter_layer_attn.layernorm.bias', 'encoder.layers.4.adapter_layer_attn.layernorm.weight', 'encoder.layers.4.adapter_layer_attn.linear_down.bias', 'encoder.layers.4.adapter_layer_attn.linear_down.weight', 'encoder.layers.4.adapter_layer_attn.linear_up.bias', 'encoder.layers.4.adapter_layer_attn.linear_up.weight', 'encoder.layers.4.adapter_layer_ff.layernorm.bias', 'encoder.layers.4.adapter_layer_ff.layernorm.weight', 'encoder.layers.4.adapter_layer_ff.linear_down.bias', 'encoder.layers.4.adapter_layer_ff.linear_down.weight', 'encoder.layers.4.adapter_layer_ff.linear_up.bias', 'encoder.layers.4.adapter_layer_ff.linear_up.weight', 'encoder.layers.5.adapter_layer_attn.layernorm.bias', 'encoder.layers.5.adapter_layer_attn.layernorm.weight', 'encoder.layers.5.adapter_layer_attn.linear_down.bias', 'encoder.layers.5.adapter_layer_attn.linear_down.weight', 'encoder.layers.5.adapter_layer_attn.linear_up.bias', 'encoder.layers.5.adapter_layer_attn.linear_up.weight', 'encoder.layers.5.adapter_layer_ff.layernorm.bias', 'encoder.layers.5.adapter_layer_ff.layernorm.weight', 'encoder.layers.5.adapter_layer_ff.linear_down.bias', 'encoder.layers.5.adapter_layer_ff.linear_down.weight', 'encoder.layers.5.adapter_layer_ff.linear_up.bias', 'encoder.layers.5.adapter_layer_ff.linear_up.weight', 'encoder.layers.6.adapter_layer_attn.layernorm.bias', 'encoder.layers.6.adapter_layer_attn.layernorm.weight', 'encoder.layers.6.adapter_layer_attn.linear_down.bias', 'encoder.layers.6.adapter_layer_attn.linear_down.weight', 'encoder.layers.6.adapter_layer_attn.linear_up.bias', 'encoder.layers.6.adapter_layer_attn.linear_up.weight', 'encoder.layers.6.adapter_layer_ff.layernorm.bias', 'encoder.layers.6.adapter_layer_ff.layernorm.weight', 'encoder.layers.6.adapter_layer_ff.linear_down.bias', 'encoder.layers.6.adapter_layer_ff.linear_down.weight', 'encoder.layers.6.adapter_layer_ff.linear_up.bias', 'encoder.layers.6.adapter_layer_ff.linear_up.weight', 'encoder.layers.7.adapter_layer_attn.layernorm.bias', 'encoder.layers.7.adapter_layer_attn.layernorm.weight', 'encoder.layers.7.adapter_layer_attn.linear_down.bias', 'encoder.layers.7.adapter_layer_attn.linear_down.weight', 'encoder.layers.7.adapter_layer_attn.linear_up.bias', 'encoder.layers.7.adapter_layer_attn.linear_up.weight', 'encoder.layers.7.adapter_layer_ff.layernorm.bias', 'encoder.layers.7.adapter_layer_ff.layernorm.weight', 'encoder.layers.7.adapter_layer_ff.linear_down.bias', 'encoder.layers.7.adapter_layer_ff.linear_down.weight', 'encoder.layers.7.adapter_layer_ff.linear_up.bias', 'encoder.layers.7.adapter_layer_ff.linear_up.weight', 'encoder.layers.8.adapter_layer_attn.layernorm.bias', 'encoder.layers.8.adapter_layer_attn.layernorm.weight', 'encoder.layers.8.adapter_layer_attn.linear_down.bias', 'encoder.layers.8.adapter_layer_attn.linear_down.weight', 'encoder.layers.8.adapter_layer_attn.linear_up.bias', 'encoder.layers.8.adapter_layer_attn.linear_up.weight', 'encoder.layers.8.adapter_layer_ff.layernorm.bias', 'encoder.layers.8.adapter_layer_ff.layernorm.weight', 'encoder.layers.8.adapter_layer_ff.linear_down.bias', 'encoder.layers.8.adapter_layer_ff.linear_down.weight', 'encoder.layers.8.adapter_layer_ff.linear_up.bias', 'encoder.layers.8.adapter_layer_ff.linear_up.weight', 'encoder.layers.9.adapter_layer_attn.layernorm.bias', 'encoder.layers.9.adapter_layer_attn.layernorm.weight', 'encoder.layers.9.adapter_layer_attn.linear_down.bias', 'encoder.layers.9.adapter_layer_attn.linear_down.weight', 'encoder.layers.9.adapter_layer_attn.linear_up.bias', 'encoder.layers.9.adapter_layer_attn.linear_up.weight', 'encoder.layers.9.adapter_layer_ff.layernorm.bias', 'encoder.layers.9.adapter_layer_ff.layernorm.weight', 'encoder.layers.9.adapter_layer_ff.linear_down.bias', 'encoder.layers.9.adapter_layer_ff.linear_down.weight', 'encoder.layers.9.adapter_layer_ff.linear_up.bias', 'encoder.layers.9.adapter_layer_ff.linear_up.weight', 'lm_head.bias', 'lm_head.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/skscla001/.local/lib/python3.12/site-packages/torch/utils/data/dataloader.py:624: UserWarning: This DataLoader will create 12 worker processes in total. Our suggested max number of worker in current system is 4, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+frozen:  wavlm.masked_spec_embed
+frozen:  wavlm.feature_extractor.conv_layers.0.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.0.layer_norm.weight
+frozen:  wavlm.feature_extractor.conv_layers.0.layer_norm.bias
+frozen:  wavlm.feature_extractor.conv_layers.1.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.2.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.3.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.4.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.5.conv.weight
+frozen:  wavlm.feature_extractor.conv_layers.6.conv.weight
+frozen:  wavlm.feature_projection.layer_norm.weight
+frozen:  wavlm.feature_projection.layer_norm.bias
+frozen:  wavlm.feature_projection.projection.weight
+frozen:  wavlm.feature_projection.projection.bias
+frozen:  wavlm.encoder.pos_conv_embed.conv.bias
+frozen:  wavlm.encoder.pos_conv_embed.conv.parametrizations.weight.original0
+frozen:  wavlm.encoder.pos_conv_embed.conv.parametrizations.weight.original1
+frozen:  wavlm.encoder.layer_norm.weight
+frozen:  wavlm.encoder.layer_norm.bias
+frozen:  wavlm.encoder.layers.0.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.0.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.0.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.0.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.0.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.0.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.0.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.0.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.0.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.0.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.0.attention.gru_rel_pos_linear.bias
+frozen:  wavlm.encoder.layers.0.attention.rel_attn_embed.weight
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.0.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.0.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.0.layer_norm.bias
+frozen:  wavlm.encoder.layers.0.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.0.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.0.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.0.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.0.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.0.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.0.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.1.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.1.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.1.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.1.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.1.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.1.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.1.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.1.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.1.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.1.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.1.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.1.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.1.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.1.layer_norm.bias
+frozen:  wavlm.encoder.layers.1.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.1.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.1.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.1.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.1.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.1.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.1.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.2.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.2.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.2.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.2.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.2.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.2.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.2.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.2.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.2.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.2.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.2.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.2.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.2.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.2.layer_norm.bias
+frozen:  wavlm.encoder.layers.2.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.2.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.2.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.2.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.2.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.2.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.2.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.3.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.3.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.3.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.3.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.3.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.3.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.3.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.3.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.3.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.3.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.3.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.3.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.3.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.3.layer_norm.bias
+frozen:  wavlm.encoder.layers.3.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.3.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.3.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.3.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.3.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.3.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.3.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.4.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.4.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.4.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.4.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.4.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.4.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.4.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.4.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.4.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.4.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.4.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.4.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.4.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.4.layer_norm.bias
+frozen:  wavlm.encoder.layers.4.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.4.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.4.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.4.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.4.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.4.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.4.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.5.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.5.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.5.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.5.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.5.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.5.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.5.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.5.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.5.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.5.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.5.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.5.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.5.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.5.layer_norm.bias
+frozen:  wavlm.encoder.layers.5.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.5.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.5.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.5.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.5.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.5.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.5.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.6.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.6.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.6.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.6.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.6.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.6.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.6.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.6.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.6.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.6.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.6.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.6.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.6.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.6.layer_norm.bias
+frozen:  wavlm.encoder.layers.6.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.6.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.6.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.6.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.6.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.6.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.6.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.7.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.7.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.7.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.7.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.7.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.7.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.7.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.7.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.7.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.7.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.7.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.7.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.7.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.7.layer_norm.bias
+frozen:  wavlm.encoder.layers.7.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.7.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.7.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.7.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.7.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.7.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.7.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.8.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.8.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.8.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.8.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.8.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.8.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.8.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.8.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.8.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.8.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.8.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.8.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.8.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.8.layer_norm.bias
+frozen:  wavlm.encoder.layers.8.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.8.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.8.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.8.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.8.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.8.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.8.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.9.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.9.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.9.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.9.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.9.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.9.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.9.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.9.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.9.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.9.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.9.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.9.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.9.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.9.layer_norm.bias
+frozen:  wavlm.encoder.layers.9.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.9.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.9.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.9.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.9.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.9.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.9.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.10.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.10.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.10.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.10.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.10.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.10.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.10.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.10.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.10.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.10.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.10.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.10.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.10.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.10.layer_norm.bias
+frozen:  wavlm.encoder.layers.10.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.10.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.10.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.10.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.10.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.10.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.10.final_layer_norm.bias
+frozen:  wavlm.encoder.layers.11.attention.gru_rel_pos_const
+frozen:  wavlm.encoder.layers.11.attention.k_proj.weight
+frozen:  wavlm.encoder.layers.11.attention.k_proj.bias
+frozen:  wavlm.encoder.layers.11.attention.v_proj.weight
+frozen:  wavlm.encoder.layers.11.attention.v_proj.bias
+frozen:  wavlm.encoder.layers.11.attention.q_proj.weight
+frozen:  wavlm.encoder.layers.11.attention.q_proj.bias
+frozen:  wavlm.encoder.layers.11.attention.out_proj.weight
+frozen:  wavlm.encoder.layers.11.attention.out_proj.bias
+frozen:  wavlm.encoder.layers.11.attention.gru_rel_pos_linear.weight
+frozen:  wavlm.encoder.layers.11.attention.gru_rel_pos_linear.bias
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.linear_down.weight
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.linear_down.bias
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.linear_up.weight
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.linear_up.bias
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.layernorm.weight
+enc_adapter_attn:  wavlm.encoder.layers.11.adapter_layer_attn.layernorm.bias
+layer_norm:  wavlm.encoder.layers.11.layer_norm.weight
+layer_norm:  wavlm.encoder.layers.11.layer_norm.bias
+frozen:  wavlm.encoder.layers.11.feed_forward.intermediate_dense.weight
+frozen:  wavlm.encoder.layers.11.feed_forward.intermediate_dense.bias
+frozen:  wavlm.encoder.layers.11.feed_forward.output_dense.weight
+frozen:  wavlm.encoder.layers.11.feed_forward.output_dense.bias
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.linear_down.weight
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.linear_down.bias
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.linear_up.weight
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.linear_up.bias
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.layernorm.weight
+enc_adapter_ff:  wavlm.encoder.layers.11.adapter_layer_ff.layernorm.bias
+layer_norm:  wavlm.encoder.layers.11.final_layer_norm.weight
+layer_norm:  wavlm.encoder.layers.11.final_layer_norm.bias
+down_param:  lm_head.weight
+down_param:  lm_head.bias
+
+count of parameters:  9560096 
+
+
+count of adapter_parameters:  9498624 
+
+  0%|          | 0/100 [00:00<?, ?it/s]
