@@ -7,7 +7,7 @@ import random
 import wandb
 import librosa
 import functools
-import os
+import os, re
 
 from tqdm.notebook import tqdm
 from transformers import Wav2Vec2Processor
@@ -16,47 +16,67 @@ from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional, Union
 from datasets import DatasetDict, load_dataset
 
+
+def get_num_trainable_parameters(model):
+    """
+    Get the number of trainable parameters.
+    """
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 """ Dataset Class """
 class Dataset(object):
     def __init__(
         self, 
-        examples, 
-        feature_extractor,
-        tokenizer, 
+        examples,
+        processor, 
         max_duration, 
         ):
         self.examples = examples['wav']
         self.labels = examples['wrd']
+        #self.max_duration = max_duration
+        #self.feature_extractor = feature_extractor
+        #self.tokenizer = tokenizer
+        #self.processor
         self.max_duration = max_duration
-        self.feature_extractor = feature_extractor
-        self.tokenizer = tokenizer
 
     def __getitem__(self, idx):
 
       try:
-        array = librosa.load(self.examples[idx], sr=16_000)[0].squeeze()
-        #print("Array:", array)
-        inputs = self.feature_extractor(
-          array,
-          sampling_rate=self.feature_extractor.sampling_rate, 
-          return_tensors="pt",
-          max_length=int(self.feature_extractor.sampling_rate * self.max_duration), 
-          truncation=True,
-          padding='max_length'
-            )
+        array, sampling_rate = torchaudio.load(self.examples[idx])
+        print(array)
+        #array = array.numpy().flatten()
+        #array = librosa.load(self.examples[idx], sr=16_000)[0].squeeze()
+        array = self.processor(array,sampling_rate=sampling_rate).input_values[0]
+        #inputs = self.feature_extractor(
+        #  array,
+        #  sampling_rate=self.feature_extractor.sampling_rate, 
+        #  return_tensors="pt",
+        #  max_length=int(self.feature_extractor.sampling_rate * self.max_duration), 
+        #  truncation=True,
+        #  padding='max_length'
+        #    )
       except:
           print("Audio not available")
-
-      try:
-        text = self.labels[idx]
-        labels = self.tokenizer(text).input_ids
+      
+      chars_to_ignore_regex = '[\,\?\.\!\-\;\:\"]'
+      try: 
+        if chars_to_ignore_regex is not None:
+          text = re.sub(chars_to_ignore_regex, "", self.labels[idx]).lower() + " "
+        else:
+          text =  self.labels[idx].lower() + " "
+        
+        text = re.sub(r"[^\w\s]", "", text).lower()
+        with self.processor.as_target_processor():
+            labels = self.processor.tokenizer(text, return_tensors="pt").input_ids[0]
+            #labels = self.tokenizer(text).input_ids
       except:
         print("Text not available")
 
       
       try:
         item = {
-          'input_values': inputs['input_values'].squeeze(0),
+          'input_values': array,
           'labels': labels
         }
 
@@ -220,6 +240,8 @@ def train_model(model, processor, tokenizer, dataloaders_dict, optimizer, schedu
                         preds_str = processor.batch_decode(preds_ids)
                         labels_ids[labels_ids==-100] = processor.tokenizer.pad_token_id
                         labels_str = processor.batch_decode(labels_ids, group_tokens=False)
+                        print("Prediction:", preds_str)
+                        print("References:", labels_str)
                         wer = metric.compute(predictions=preds_str, references=labels_str)
                         epoch_preds_str += preds_str
                         epoch_labels_str += labels_str
