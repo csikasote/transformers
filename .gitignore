@@ -167,3 +167,8 @@ tags
 
 # ruff
 .ruff_cache
+
+# Wav files
+*.wav
+*.flac
+*.mp3
